@@ -6,47 +6,50 @@
         {
           "name": "BTCUSD",
           "description": "USD quote for BTC",
-          "metrics": ["price", "volume"]
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
           "name": "ETHUSD",
           "description": "USD quote for ETH",
-          "metrics": ["price", "volume"]
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
           "name": "LTCUSD",
           "description": "USD quote for LTC",
-          "metrics": ["price", "volume"]
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
-          "name": "BTCEUR",
-          "description": "EUR quote for BTC",
-          "metrics": ["price", "volume"]
+          "name": "MANAUSD",
+          "description": "USD quote for MANA (Decentraland)",
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
-          "name": "ETHEUR",
-          "description": "EUR quote for ETH",
-          "metrics": ["price", "volume"]
+          "name": "DOGEUSD",
+          "description": "USD quote for DOGE",
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
-          "name": "LTCEUR",
-          "description": "EUR quote for LTC",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "BTCGBP",
-          "description": "GBP quote for BTC",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "ETHGBP",
-          "description": "GBP quote for ETH",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "LTCGBP",
-          "description": "GBP quote for LTC",
-          "metrics": ["price", "volume"]
+          "name": "USDTUSD",
+          "description": "USD quote for USDT",
+          "metrics": [
+            "price",
+            "volume"
+          ]
         }
       ]
     },
@@ -56,37 +59,34 @@
         {
           "name": "BTCUSD",
           "description": "USD quote for BTC",
-          "metrics": ["price", "volume"]
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
           "name": "ETHUSD",
           "description": "USD quote for ETH",
-          "metrics": ["price", "volume"]
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
-          "name": "BTCEUR",
-          "description": "EUR quote for BTC",
-          "metrics": ["price", "volume"]
+          "name": "LTCUSD",
+          "description": "USD quote for LTC",
+          "metrics": [
+            "price",
+            "volume"
+          ]
         },
         {
-          "name": "ETHEUR",
-          "description": "EUR quote for ETH",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "LTCEUR",
-          "description": "EUR quote for LTC",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "BTCGBP",
-          "description": "GBP quote for BTC",
-          "metrics": ["price", "volume"]
-        },
-        {
-          "name": "ETHGBP",
-          "description": "GBP quote for ETH",
-          "metrics": ["price", "volume"]
+          "name": "USDTUSD",
+          "description": "USD quote for USDT",
+          "metrics": [
+            "price",
+            "volume"
+          ]
         }
       ]
     }

@@ -38,6 +38,11 @@ Crypto quotes are retrieved from https://docs.cryptowat.ch/rest-api/.
     2. `export FLASK_ENV=development`
 
 
+7. *(Optional)* Sign up for a Cryptowatch account and get an API key. Set the public key in an environment variable.
+    1. Visit https://cryptowat.ch/ and follow instructions to create an account and generate an API key.
+    2. `export CRYPTO_API_KEY=<your public key>`
+
+
 #### Running the application
 
 TODO
