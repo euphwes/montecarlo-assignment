@@ -1,25 +1,9 @@
-from enum import Enum
 import json
 from os.path import dirname, abspath, join
 
 _MARKETS = 'markets'
-_METRICS = 'metrics'
 _NAME = 'name'
 _PAIRS = 'pairs'
-
-
-class CryptoMetricType(Enum):
-    price = 'price'
-    volume = 'volume'
-
-
-class CryptoFiatPairConfig:
-    """ Config for this particular crypto/fiat pair in a particular market, which specifies which
-    metric types are tracked. """
-
-    def __init__(self, pair_data):
-        self.name = pair_data[_NAME]
-        self.metrics = [CryptoMetricType[metric] for metric in pair_data[_METRICS]]
 
 
 class MarketConfig:
@@ -27,13 +11,12 @@ class MarketConfig:
 
     def __init__(self, market_data):
         self.name = market_data[_NAME]
-        self.pairs = [CryptoFiatPairConfig(pair) for pair in market_data[_PAIRS]]
+        self.pairs = market_data[_PAIRS]
 
 
 class CryptoMetricsConfig:
-    """ Top-level config class that specifies which crypto markets are to be polled, which
-    crypto/fiat pairs in each market are considered, and which metrics are tracked for each of these
-    crypto/fiat pairs. """
+    """ Top-level config class that specifies which crypto markets are to be polled and which
+    crypto/fiat pairs in each market are tracked. """
 
     def __init__(self, config_path):
         try:
