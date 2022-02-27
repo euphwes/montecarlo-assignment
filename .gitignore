@@ -233,3 +233,4 @@ fabric.properties
 
 # Local filesystem sqlite databases
 *.sqlite
+*.sqlite.bak

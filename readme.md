@@ -21,7 +21,7 @@ Crypto quotes are retrieved from https://docs.cryptowat.ch/rest-api/.
 3. Activate the virtual environment so that you're running the expected Python version and installing dependencies
    specifically to this environment.
     1. `. montecarlo/Scripts/activate` (if on Linux/Unix)
-    2. `montecarlo/Scripts/active.bat` (if on Windows)
+    2. `montecarlo/Scripts/active.bat`
 
 
 4. Clone this repository and move into the newly-created project directory.
@@ -43,7 +43,25 @@ Crypto quotes are retrieved from https://docs.cryptowat.ch/rest-api/.
     2. `export CRYPTO_API_KEY=<your public key>`
 
 
-#### Running the application
+#### Running the metrics poller
+
+This web application requires a process running which periodically polls the Cryptowatch API to get the latest cryptocurrency
+metrics and persist them to the database. Fire up this process by following these instructions:
+
+1. Open up a new terminal window
+2. Activate your new montecarlo Python virtual environment:
+    1. `cd` to the directory containing your virtual environment
+    2. `. montecarlo/Scripts/activate`
+3. `cd` to your root `montecarlo_app` project directory
+4. Run the poller process:
+    1. `python poller_entry.py`
+   
+This will create a scheduler which will run the crypto metrics poller on a 1-minute interval. You'll see informative
+logging in the terminal window which will indicate the poller is running.
+
+Press `Ctrl-C` at any time to quit (note: it may take up to 1 minute to exit as the scheduler is blocking).
+
+#### Running the web application
 
 TODO
 
@@ -64,3 +82,5 @@ right now doing multiple DB queries, 1 each for ticker and metric type combo
 For larger numbers of metrics, and/or larger number of tickers, it might be more effective
 from a DB IO POV to query one *all* data from previous 24 hours, and then filter in memory.
 Need to do some DB query profiling, estimate resource usage, etc
+
+calculating std dev and ranking on the fly in the polling process.
