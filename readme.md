@@ -56,3 +56,11 @@ TODO
 ### Design considerations and future improvements
 
 TODO
+
+timestamp for metrics not established until all metrics are collected, for simplicity
+possibly timestamp each metric as the latest data is pulled
+
+right now doing multiple DB queries, 1 each for ticker and metric type combo
+For larger numbers of metrics, and/or larger number of tickers, it might be more effective
+from a DB IO POV to query one *all* data from previous 24 hours, and then filter in memory.
+Need to do some DB query profiling, estimate resource usage, etc

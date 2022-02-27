@@ -6,6 +6,11 @@ import cryptowatch as cw_client
 from cryptowatch.errors import CryptowatchError
 
 from montecarlo.metrics.config import CRYPTO_CONFIG
+from montecarlo.persistence.metrics_manager import (
+    bulk_save_metrics,
+    METRIC_PRICE,
+    METRIC_VOLUME
+)
 
 
 _log = getLogger(__name__)
@@ -19,28 +24,32 @@ cw_client.api_key = environ.get(_API_KEY)
 
 
 def poll_crypto_metrics():
-    """ Entry point for the periodic task which polls cryptowatch for crypto metrics, and persists
-    these metrics and calculated statistics to the database for retrieval by the web API. """
+    """ Entry point for the periodic task which polls Cryptowatch for crypto metrics, and persists
+    these metrics for retrieval by the web API. """
 
-    # Grab the current datetime to persist later
+    # Grab the current timestamp to assign to these metrics when we persist them.
     now = datetime.utcnow()
 
-    # Map tickers to the new metrics pulled to facilitate custom calculations and data persistence
-    ticker_metrics_map = dict()
+    # Maintain a map of tickers to metric types and their latest values, to facilitate bulk metric
+    # insertion into the database.
+    ticker_metric_map = dict()
 
+    # For each crypto/fiat pair in each market, construct the ticker identifier and pull the
+    # latest market summary from the cryptowatch API. This crypto summary will include latest price
+    # quotes as well as trade volume information.
     for market in CRYPTO_CONFIG.markets:
         for pair in market.pairs:
-            ticker = _TICKER_TEMPLATE.format(market_name=market.name, pair_name=pair.name).upper()
+            ticker = _TICKER_TEMPLATE.format(market_name=market.name, pair_name=pair).upper()
             try:
                 price, volume = _pull_market_summary(ticker)
-                ticker_metrics_map[ticker] = (price, volume)
+                ticker_metric_map[ticker] = {METRIC_PRICE: price, METRIC_VOLUME: volume}
+
             except CryptowatchError as e:
                 err = 'Failed to pull market summary for {ticker}: {e}'.format(ticker=ticker, e=e)
                 _log.error(err)
 
-    # TODO pull 24-hour previous data
-    # TODO calc standard deviation and rank metrics
-    # TODO persist data
+    # Persist these metrics to the database.
+    bulk_save_metrics(ticker_metric_map, now)
 
 
 def _pull_market_summary(ticker):
@@ -57,7 +66,7 @@ def _pull_market_summary(ticker):
     _log.debug('{ticker}: price={price}, volume={volume}'.format(
         ticker=ticker,
         price=price,
-        volume=volume)
-    )
+        volume=volume
+    ))
 
     return price, volume

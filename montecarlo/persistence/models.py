@@ -4,17 +4,13 @@ from montecarlo import DB
 
 
 class CryptoPairCustomMetric(DB.Model):
-    """ A point-in-time instance of a crypto/fiat pair metric (price or volume), its standard
-    deviation over the trailing 24-hour time period, as well as its rank (judged by standard
-    deviation) as compared to other metrics of the same type. """
+    """ A point-in-time instance of a crypto/fiat pair metric (price or volume) and its value. """
 
     __tablename__ = 'metrics'
     id = DB.Column(DB.Integer, primary_key=True)
-    ticker = DB.Column(DB.String)
-    metric_type = DB.Column(DB.Enum('price', 'volume', name='metric_type'))
+    ticker = DB.Column(DB.String, index=True)
+    metric_type = DB.Column(DB.Enum('price', 'volume', name='metric_type'), index=True)
     metric_value = DB.Column(DB.Float)
-    metric_ranking = DB.Column(DB.Integer)
-    standard_deviation = DB.Column(DB.Float)
     timestamp = DB.Column(DB.DateTime(timezone=True))
 
 
