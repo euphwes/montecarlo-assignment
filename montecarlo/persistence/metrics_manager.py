@@ -1,5 +1,7 @@
 """ Easy access queries and operations against this app's database. """
 
+from datetime import timedelta
+
 from montecarlo import DB
 from montecarlo.persistence.models import CryptoPairMetric, MetricInstanceValue
 
@@ -64,3 +66,16 @@ def _get_or_create_crypto_pair_metric(ticker, metric_type):
 
     return crypto_pair_metric
 
+
+# TODO test
+def get_24h_metric_history(metric_id, ending_timestamp):
+    """ Returns 24 hours' worth of data points (MetricInstanceValue) for the specified
+    CryptoPairMetric ending at the specified timestamp. """
+
+    starting_timestamp = ending_timestamp - timedelta(days=1)
+
+    return MetricInstanceValue.query.\
+        filter(MetricInstanceValue.custom_metric_id == metric_id).\
+        filter(MetricInstanceValue.timestamp >= starting_timestamp).\
+        filter(MetricInstanceValue.timestamp <= ending_timestamp).\
+        all()

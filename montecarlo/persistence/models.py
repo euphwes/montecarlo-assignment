@@ -37,6 +37,12 @@ class MetricInstanceValue(DB.Model):
     timestamp = DB.Column(DB.DateTime(timezone=True))
     crypto_pair_metric = relationship('CryptoPairMetric', backref='values')
 
+    def to_json(self):
+        return {
+            'value': self.metric_value,
+            'timestamp': str(self.timestamp)
+        }
+
 
 # This ensures the local SQLite database and underlying tables are created.
 # In a production system, this wouldn't be the responsibility of the web app itself, but rather

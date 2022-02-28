@@ -1,9 +1,13 @@
 """ API routes. """
 
+from datetime import datetime
+from statistics import stdev
+
 from montecarlo import app
 from montecarlo.persistence.metrics_manager import (
     get_all_crypto_pair_metrics,
-    get_crypto_pair_metric_by_id
+    get_crypto_pair_metric_by_id,
+    get_24h_metric_history
 )
 
 
@@ -44,6 +48,7 @@ def metrics_info(metric_id):
 
      Ex: TODO """
 
+    # Ensure metric ID is an integer and return a 400 Bad Request if it's not
     try:
         metric_id = int(metric_id)
     except ValueError:
@@ -51,8 +56,58 @@ def metrics_info(metric_id):
         return {'error': msg}, 400
 
     metric = get_crypto_pair_metric_by_id(int(metric_id))
+
+    # Ensure the metric exists. If not, return a 404 Not Found.
     if metric is None:
         return {'error': 'No such metric with ID {}.'.format(metric_id)}, 404
 
-    # placeholder
-    return {'id': metric_id, 'ticker': metric.ticker}
+    # TODO test and clean up below
+
+    # Get metric instance value history over the last day so we can return values and timestamps
+    # in this API response for charting purposes.
+    metric_value_history = get_24h_metric_history(metric.id, datetime.utcnow())
+
+    # Extract a raw list of metric values over the past day so we can calculate standard deviation.
+    raw_history = [m.metric_value for m in metric_value_history]
+    std_deviation = stdev(raw_history)
+
+    # Get similar metrics and their standard deviations, and sort by standard deviation
+    std_devs = _get_metric_std_devs(metric.metric_type)
+    std_devs.sort(key=lambda x: x[1])
+
+    rank = None
+    for i, (m_id, std_dev) in enumerate(std_devs):
+        if metric.id == m_id:
+            rank = i + 1
+            break
+
+    return {
+        'id': metric_id,
+        'ticker': metric.ticker,
+        'metric_type': metric.metric_type,
+        'metric_24h_history': [m.to_json() for m in metric_value_history],
+        'standard_deviation': std_deviation,
+        'metric_rank': '{}/{}'.format(rank, len(std_devs))
+    }
+
+
+def _get_metric_std_devs(metric_type):
+    """ TODO doc and test """
+
+    # Store a list of tuples of metrics IDs to daily standard deviation so we can rank metrics of
+    # the specified type.
+    metric_std_devs = list()
+
+    # Get all metrics and only keep the ones with the same metric type, so we can perform a
+    # meaningful ranking of similar metrics by their daily standard deviation.
+    all_metrics = get_all_crypto_pair_metrics()
+    similar_metrics = [m for m in all_metrics if m.metric_type == metric_type]
+
+    now = datetime.utcnow()
+    for metric in similar_metrics:
+        metric_value_history = get_24h_metric_history(metric.id, now)
+        raw_history = [m.metric_value for m in metric_value_history]
+
+        metric_std_devs.append((metric.id,stdev(raw_history)))
+
+    return metric_std_devs
