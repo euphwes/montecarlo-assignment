@@ -34,13 +34,20 @@ Crypto quotes are retrieved from https://docs.cryptowat.ch/rest-api/.
 
 
 6. Set environment variables.
-    1. `export FLASK_APP=montecarlo_app`
+    1. `export FLASK_APP=montecarlo`
     2. `export FLASK_ENV=development`
 
 
 7. *(Optional)* Sign up for a Cryptowatch account and get an API key. Set the public key in an environment variable.
     1. Visit https://cryptowat.ch/ and follow instructions to create an account and generate an API key.
     2. `export CRYPTO_API_KEY=<your public key>`
+
+
+#### Running unit tests
+
+`pytest` is my preferred test runner and testing framework, and is included in `requirements.txt`.
+
+From the root project directory, run the test suite with `python -m pytest`.
 
 
 #### Running the metrics poller
