@@ -31,9 +31,36 @@ class APIRoutesTests(TestCase):
         DB.session.commit()
 
     def test_metrics_list(self):
+        """ Tests a call to the metrics list route. """
+
         with app.test_client() as c:
             response = c.get('/metrics')
             assert response.status_code == 200
             assert response.json == {
                 'metrics': [m.to_json() for m in self.known_metrics]
+            }
+
+    def test_metrics_info_invalid_metric_id(self):
+        """ Tests a call to the metrics info route with an invalid metric ID. """
+
+        with app.test_client() as c:
+            response = c.get('/metrics/twenty')
+
+            # 400 Bad Request
+            assert response.status_code == 400
+            assert response.json == {
+                'error': 'Invalid metric ID: "twenty". Must be an integer.'
+            }
+
+    def test_metrics_info_unknown_metric(self):
+        """ Tests a call to the metrics info route with a metric ID, but to a metric which does not
+        exist. """
+
+        with app.test_client() as c:
+            response = c.get('/metrics/30')
+
+            # 404 Not Found
+            assert response.status_code == 404
+            assert response.json == {
+                'error': 'No such metric with ID 30.'
             }

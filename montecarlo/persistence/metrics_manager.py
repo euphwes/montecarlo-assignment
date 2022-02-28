@@ -42,6 +42,12 @@ def get_all_crypto_pair_metrics():
     return CryptoPairMetric.query.all()
 
 
+def get_crypto_pair_metric_by_id(metric_id):
+    """ Returns a CryptoPairMetric by ID. """
+
+    return CryptoPairMetric.query.get(metric_id)
+
+
 def _get_or_create_crypto_pair_metric(ticker, metric_type):
     """ Retrieves a CryptoPairMetric if it exists, otherwise creates and returns it. """
 

@@ -12,7 +12,9 @@ from montecarlo import DB
 from montecarlo.persistence.models import CryptoPairMetric, MetricInstanceValue
 from montecarlo.persistence.metrics_manager import (
     bulk_save_metrics,
-    _get_or_create_crypto_pair_metric
+    _get_or_create_crypto_pair_metric,
+    get_all_crypto_pair_metrics,
+    get_crypto_pair_metric_by_id
 )
 
 
@@ -119,3 +121,33 @@ class MetricsManagerTest(TestCase):
         # 16 metric instance values should exist now
         # 4 data points each for the above 4 metric types (across 4 minutes)
         assert MetricInstanceValue.query.count() == 16
+
+
+    def test_get_all_crypto_pair_metrics(self):
+
+        expected_metrics = list()
+        for ticker in ['KRAKEN:BTCUSD', 'KRAKEN:DOGEUSD']:
+            for metric_type in ['price', 'volume']:
+                _get_or_create_crypto_pair_metric(ticker, metric_type)
+                expected_metrics.append({'ticker': ticker, 'metric_type': metric_type})
+
+        assert CryptoPairMetric.query.count() == 4
+
+        received_metrics = get_all_crypto_pair_metrics()
+        assert len(received_metrics) == 4
+
+        for i, expected_metric in enumerate(expected_metrics):
+            rec_metric = received_metrics[i]
+            assert rec_metric.ticker == expected_metric['ticker']
+            assert rec_metric.metric_type == expected_metric['metric_type']
+
+
+    def test_get_crypto_pair_metric_by_id(self):
+
+        expected_ticker = 'KRAKEN:BTCUSD'
+        expected_metric_type = 'price'
+        expected_metric = _get_or_create_crypto_pair_metric(expected_ticker, expected_metric_type)
+
+        received_metric = get_crypto_pair_metric_by_id(expected_metric.id)
+
+        assert received_metric == expected_metric
