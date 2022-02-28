@@ -41,7 +41,7 @@ def poll_crypto_metrics():
         for pair in market.pairs:
             ticker = _TICKER_TEMPLATE.format(market_name=market.name, pair_name=pair).upper()
             try:
-                price, volume = _pull_market_summary(ticker)
+                price, volume = pull_market_summary(ticker)
                 ticker_metric_map[ticker] = {METRIC_PRICE: price, METRIC_VOLUME: volume}
 
             except CryptowatchError as e:
@@ -52,7 +52,7 @@ def poll_crypto_metrics():
     bulk_save_metrics(ticker_metric_map, now)
 
 
-def _pull_market_summary(ticker):
+def pull_market_summary(ticker):
     """ Calls the cryptowatch market summary API for the market and crypto/fiat pair ticker, and
     returns the subset of relevant information we care about from this call, a tuple of
     (price, volume) for this instant in time. """

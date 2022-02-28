@@ -12,7 +12,7 @@ logging.basicConfig(stream=stdout, format=log_format)
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler()
-    scheduler.add_job(poll_crypto_metrics, 'interval', seconds=60)
+    scheduler.add_job(poll_crypto_metrics, 'interval', seconds=300)
 
     print('Press Ctrl-C to exit.')
 
