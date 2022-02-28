@@ -36,6 +36,12 @@ def bulk_save_metrics(ticker_metric_map, timestamp):
     DB.session.commit()
 
 
+def get_all_crypto_pair_metrics():
+    """ Returns all CryptoPairMetrics. """
+
+    return CryptoPairMetric.query.all()
+
+
 def _get_or_create_crypto_pair_metric(ticker, metric_type):
     """ Retrieves a CryptoPairMetric if it exists, otherwise creates and returns it. """
 
@@ -51,3 +57,4 @@ def _get_or_create_crypto_pair_metric(ticker, metric_type):
         DB.session.commit()
 
     return crypto_pair_metric
+

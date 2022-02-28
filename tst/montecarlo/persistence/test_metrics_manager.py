@@ -20,7 +20,6 @@ class MetricsManagerTest(TestCase):
 
     def setUp(self):
         """ Make sure that the in-memory database is clean before each test method. """
-
         DB.drop_all()
         DB.create_all()
 

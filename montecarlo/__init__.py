@@ -25,7 +25,4 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 DB = SQLAlchemy(app)
 
-@app.route('/')
-def placeholder():
-    return 'Hello, Monte Carlo folks!'
-
+from montecarlo.api.routes import *

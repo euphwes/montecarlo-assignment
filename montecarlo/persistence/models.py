@@ -19,6 +19,13 @@ class CryptoPairMetric(DB.Model):
     # Add a composite index on CryptoPairMetric ticker and type, this should be a unique combo
     __tableargs__ = (Index('ticker_type_index', 'ticker', 'metric_type'), )
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'ticker': self.ticker,
+            'metric_type': self.metric_type
+        }
+
 
 class MetricInstanceValue(DB.Model):
     """ A point-in-time value for a CryptoPairMetric. """
