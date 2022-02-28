@@ -82,6 +82,9 @@ TODO
 
 TODO
 
+skipped some unit tests (config, app setup in init), limited by time and felt like it was
+more valuable to write tests for the core business logic
+
 timestamp for metrics not established until all metrics are collected, for simplicity
 possibly timestamp each metric as the latest data is pulled
 
