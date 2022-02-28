@@ -67,7 +67,6 @@ def _get_or_create_crypto_pair_metric(ticker, metric_type):
     return crypto_pair_metric
 
 
-# TODO test
 def get_24h_metric_history(metric_id, ending_timestamp):
     """ Returns 24 hours' worth of data points (MetricInstanceValue) for the specified
     CryptoPairMetric ending at the specified timestamp. """

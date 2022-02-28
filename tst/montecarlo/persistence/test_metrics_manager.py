@@ -14,7 +14,8 @@ from montecarlo.persistence.metrics_manager import (
     bulk_save_metrics,
     _get_or_create_crypto_pair_metric,
     get_all_crypto_pair_metrics,
-    get_crypto_pair_metric_by_id
+    get_crypto_pair_metric_by_id,
+    get_24h_metric_history
 )
 
 
@@ -151,3 +152,48 @@ class MetricsManagerTest(TestCase):
         received_metric = get_crypto_pair_metric_by_id(expected_metric.id)
 
         assert received_metric == expected_metric
+
+
+    def test_get_24h_metric_history(self):
+
+        ticker = 'KRAKEN:BTCUSD'
+        metric_type = 'price'
+        metric = _get_or_create_crypto_pair_metric(ticker, metric_type)
+
+        now = datetime.utcnow()
+        ticker_metric_map = {
+            'KRAKEN:BTCUSD': {
+                'price': 123.45,
+                'volume': 88.77
+            }
+        }
+
+        # Push some metric instance values over the last 6 hours
+        # Note the price values are 123.45, we'll assert those values later
+        for n in range(6):
+            timestamp = now - timedelta(hours=n)
+            bulk_save_metrics(ticker_metric_map, timestamp)
+
+        # Push some metric instance values more than a day ago
+        # Note the price values are now 999.99, we'll make sure we assert that we're not getting
+        # these particular values
+        ticker_metric_map = {
+            'KRAKEN:BTCUSD': {
+                'price': 999.99,
+                'volume': 88.77
+            }
+        }
+        for n in range(6):
+            timestamp = now - timedelta(days=2, hours=n)
+            bulk_save_metrics(ticker_metric_map, timestamp)
+
+        # 24 total metric instance data points, 12 each for price and volume of the above ticker
+        assert MetricInstanceValue.query.count() == 24
+
+        metric_24h_history = get_24h_metric_history(metric.id, now)
+
+        # Should have only received the 6 data points in the last day specifically for price.
+        # Note: we should also assert specific timestamps on the metric values, but I'm glossing
+        # over that in the interest of time for this exercise.
+        assert len(metric_24h_history) == 6
+        assert all(m.metric_value == 123.45 for m in metric_24h_history)
